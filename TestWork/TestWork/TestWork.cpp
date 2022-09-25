@@ -18,12 +18,12 @@ TestWork::TestWork(double right_border, double initial_value, double initial_ste
 
 double TestWork::Func(double u)
 {
-    return -3/2 * u;
+    return -3.0/2.0 * u;
 }
 
 double TestWork::TrueFunc(double x)
 {
-    return true_values.front() * exp(-3/2 * x);
+    return true_values.front() * exp(-3.0/2.0 * x);
 }
 
 double TestWork::NumFunc(double v, double h)
@@ -89,7 +89,7 @@ void TestWork::Print()
 	for ( unsigned int i = 0; i < N; i++ )
 	{
 		std::cout << "Num: (" << grid[i] << ", " << num_values[i] << ")" << "\tTrue: (" << grid[i] << ", " << true_values[i] << ")"
-		<< "\th = " << grid_step[i] << "\tv = " << num_values[i] << "\tvD = " << d_num_values[i]
+		<< "\th = " << grid_step[i] << "\tv = " << num_values[i] << "\tv2 = " << d_num_values[i]
 		<< "\tDiff = " << true_values[i] - final_num_values[i]
 		<< std::endl;
 	}
