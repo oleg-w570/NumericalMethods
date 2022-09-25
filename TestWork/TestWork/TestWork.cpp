@@ -1,10 +1,11 @@
 #include "TestWork.h"
 
-TestWork::TestWork(double right_border, double initial_value, double initial_step, int max_steps, bool ctrl_local_err)
+TestWork::TestWork(double right_border, double initial_value, double initial_step, int max_steps, bool ctrl_local_err, double eps)
 {
 	mult2 = 0;
 	div2 = 0;
 	this->ctrl_local_err = ctrl_local_err;
+    this->eps = eps;
 	this->max_steps = max_steps;
 	this->right_border = right_border;
     grid.push_back(0);
@@ -48,7 +49,7 @@ void TestWork::MethodStep()
 	const double v2 = DNumFunc(final_num_values.back(), h);
 	const double s = abs(v2 - v) / 15;
 
-	if (s > EPS && ctrl_local_err)
+    if (s > eps && ctrl_local_err)
 	{
 		grid_step.back() /= 2;
 		div2++;
@@ -57,7 +58,7 @@ void TestWork::MethodStep()
 	{
 		const double x = grid.back() + h;
 		const double u = TrueFunc(x);
-		if (s < EPS / 32 && ctrl_local_err)
+        if (s < eps / 32 && ctrl_local_err)
 		{
 			h *= 2;
 			mult2++;

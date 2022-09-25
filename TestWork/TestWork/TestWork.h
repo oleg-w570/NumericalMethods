@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <iostream>
-#define EPS 1e-8
 
 class TestWork
 {
@@ -14,12 +13,13 @@ public:
 	std::vector<double> d_num_values;
 	std::vector<double> final_num_values;
 	double right_border;
+    double eps;
 	bool ctrl_local_err;
 	int max_steps;
 	int mult2;
 	int div2;
 
-    TestWork(double right_border = 1.0, double initial_value = 1.0, double initial_step = 0.01, int max_steps = 1000, bool ctrl_local_err = true);
+    TestWork(double right_border = 1.0, double initial_value = 1.0, double initial_step = 0.01, int max_steps = 1000, bool ctrl_local_err = true, double eps = 1e-8);
 	double Func(double u);
 	double TrueFunc(double x);
 	double NumFunc(double v, double h);

@@ -20,10 +20,10 @@ void MainWindow::on_pushButtonRun_clicked()
     double u0 = ui->lineEditU0->text().toDouble();
     double N = ui->lineEditN->text().toInt();
     double h0 = ui->lineEditH0->text().toDouble();
-    //double eps = ui->lineEditEPS->text().toDouble();
+    double eps = ui->lineEditEPS->text().toDouble();
     bool ctrlLP = ui->radioButtonCtrlLP->isChecked();
 
-    TestWork T(b, u0, h0, N, ctrlLP);
+    TestWork T(b, u0, h0, N, ctrlLP, eps);
     T.Run();
     QVector<double> x = QVector<double>(T.grid.begin(), T.grid.end());
     QVector<double> y = QVector<double>(T.final_num_values.begin(), T.final_num_values.end());
@@ -34,7 +34,8 @@ void MainWindow::on_pushButtonRun_clicked()
     ui->graph->yAxis->setRange(T.final_num_values.front(),T.final_num_values.back());
     ui->graph->replot();
 
-    ui->tableWidget->clearContents();
+    ui->tableWidget->clear();
+    ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Xi" << "Vi" << "V2i" << "Vi - V2i" << "ОЛП" << "Hi" << "C1" << "C2" << "Ui" << "Ui - Vi");
     for (int i = 0; i < T.grid.size(); i++)
     {
         QTableWidgetItem *x = new QTableWidgetItem(QString::number(T.grid[i]));
