@@ -44,8 +44,8 @@ void MainWindow::on_pushButtonRun_clicked()
         QTableWidgetItem *diff = new QTableWidgetItem(QString::number(T.num_values[i] - T.d_num_values[i]));
         QTableWidgetItem *OLP = new QTableWidgetItem(QString::number((T.d_num_values[i] - T.num_values[i]) / 15 * 16));
         QTableWidgetItem *h = new QTableWidgetItem(QString::number(T.grid_step[i]));
-        QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(T.div2));
-        QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(T.mult2));
+        QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(T.div2[i]));
+        QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(T.mult2[i]));
         QTableWidgetItem *u = new QTableWidgetItem(QString::number(T.true_values[i]));
         QTableWidgetItem *true_diff = new QTableWidgetItem(QString::number(T.true_values[i] - T.final_num_values[i]));
 

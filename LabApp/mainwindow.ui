@@ -198,22 +198,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>949</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menu">
-    <property name="title">
-     <string>Тестовая задача</string>
-    </property>
-   </widget>
-   <addaction name="menu"/>
-  </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <customwidgets>

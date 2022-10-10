@@ -127,9 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="MainWork1.h" />
+    <ClInclude Include="MainWork2.h" />
     <ClInclude Include="TestWork.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="MainWork1.cpp" />
+    <ClCompile Include="MainWork2.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="TestWork.cpp" />
   </ItemGroup>

@@ -8,23 +8,27 @@ CONFIG += c++17
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+INCLUDEPATH += "include"
+INCLUDEPATH += "qcustomplot"
+INCLUDEPATH += "app"
+
 SOURCES += \
-    ../TestWork/TestWork/MainWork1.cpp \
-    ../TestWork/TestWork/MainWork2.cpp \
-    ../TestWork/TestWork/TestWork.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    qcustomplot.cpp
+    app/main.cpp \
+    app/mainwindow.cpp \
+    src/TestWork.cpp \
+    src/MainWork1.cpp \
+    src/MainWork2.cpp \
+    qcustomplot/qcustomplot.cpp
 
 HEADERS += \
-    ../TestWork/TestWork/MainWork1.h \
-    ../TestWork/TestWork/MainWork2.h \
-    ../TestWork/TestWork/TestWork.h \
-    mainwindow.h \
-    qcustomplot.h
+    app/mainwindow.h \
+    include/TestWork.h \
+    include/MainWork1.h \
+    include/MainWork2.h \
+    qcustomplot/qcustomplot.h
 
 FORMS += \
-    mainwindow.ui
+    app/mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

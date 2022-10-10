@@ -1,11 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include "TestWork.h"
+#include "MainWork1.h"
+#include "MainWork2.h"
 #include <QMainWindow>
-#include <QVector>
-#include "../TestWork/TestWork/TestWork.h"
-#include "../TestWork/TestWork/MainWork1.h"
-#include "../TestWork/TestWork/MainWork2.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,17 +18,11 @@ public:
     ~MainWindow();
 
 private slots:
+    void on_pushButtonTestRun_clicked();
 
-    void on_pushButtonRun_clicked();
+    void on_pushButtonMain1Run_clicked();
 
 private:
-    TestWork* T;
-    MainWork1* M1;
-    MainWork2* M2;
     Ui::MainWindow *ui;
-
-    void calcTest();
-    void calcMain1();
-    void calcMain2();
 };
 #endif // MAINWINDOW_H
