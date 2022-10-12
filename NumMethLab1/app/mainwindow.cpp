@@ -12,6 +12,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->tableWidgetMain1->setHorizontalHeaderLabels(QStringList() << "Xi" << "Vi" << "V2i" << "Vi - V2i" << "ОЛП" << "Hi" << "C1" << "C2");
     ui->tableWidgetMain1->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+    ui->tableWidgetMain2->setHorizontalHeaderLabels(QStringList() << "Xi" << "V1i" << "V1_2i" << "V1i - V1_2i" << "V2i" << "V2_2i" << "V2i - V2_2i" << "ОЛП" << "Hi" << "C1" << "C2");
+    ui->tableWidgetMain2->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 MainWindow::~MainWindow()
@@ -124,6 +127,80 @@ void MainWindow::on_pushButtonMain1Run_clicked()
         ui->tableWidgetMain1->setItem(i, 5, h);
         ui->tableWidgetMain1->setItem(i, 6, c1);
         ui->tableWidgetMain1->setItem(i, 7, c2);
+    }
+
+}
+
+
+void MainWindow::on_pushButtonMain2Run_clicked()
+{
+    double alpha = ui->lineEditMain2Alpha->text().toDouble();
+    double beta = ui->lineEditMain2Beta->text().toDouble();
+    double u1 = ui->lineEditMain2U1->text().toDouble();
+    double u2 = ui->lineEditMain2U2->text().toDouble();
+    double b = ui->lineEditMain2B->text().toDouble();
+    double h0 = ui->lineEditMain2H0->text().toDouble();
+    int N = ui->lineEditMain2N->text().toInt();
+    double eps = ui->lineEditMain2LP->text().toDouble();
+    bool ctl = ui->radioButtonMain2CLP->isChecked();
+
+    MainWork2 M(alpha, beta, b, u1, u2, h0, N, ctl, eps);
+    M.Run();
+    QVector<double> x(M.grid.begin(), M.grid.end());
+    QVector<double> y1(M.final_num_values_1.begin(), M.final_num_values_1.end());
+    QVector<double> y2(M.final_num_values_2.begin(), M.final_num_values_2.end());
+    const auto [y1_min, y1_max] = std::minmax_element(M.final_num_values_1.begin(), M.final_num_values_1.end());
+    const auto [y2_min, y2_max] = std::minmax_element(M.final_num_values_2.begin(), M.final_num_values_2.end());
+
+    ui->graphMain2Faz->addGraph();
+    ui->graphMain2Faz->graph(0)->setData(y1, y2);
+    ui->graphMain2Faz->xAxis->setRange(*y1_min, *y1_max);
+    ui->graphMain2Faz->yAxis->setRange(*y2_min, *y2_max);
+    ui->graphMain2Faz->replot();
+
+    ui->graphMain2U1->addGraph();
+    ui->graphMain2U1->graph(0)->setData(x, y1);
+    ui->graphMain2U1->xAxis->setRange(0, M.grid.back());
+    ui->graphMain2U1->yAxis->setRange(*y1_min, *y1_max);
+    ui->graphMain2U1->replot();
+
+    ui->graphMain2U2->addGraph();
+    ui->graphMain2U2->graph(0)->setData(x, y2);
+    ui->graphMain2U2->xAxis->setRange(0, M.grid.back());
+    ui->graphMain2U2->yAxis->setRange(*y2_min, *y2_max);
+    ui->graphMain2U2->replot();
+
+
+    ui->tableWidgetMain2->clearContents();
+    ui->tableWidgetMain2->setRowCount(0);
+
+    for (int i = 0; i < M.grid.size(); i++)
+    {
+        QTableWidgetItem *x = new QTableWidgetItem(QString::number(M.grid[i]));
+        QTableWidgetItem *v1 = new QTableWidgetItem(QString::number(M.num_values_1[i]));
+        QTableWidgetItem *v1_2 = new QTableWidgetItem(QString::number(M.d_num_values_1[i]));
+        QTableWidgetItem *diff1 = new QTableWidgetItem(QString::number(M.num_values_1[i] - M.d_num_values_1[i]));
+        QTableWidgetItem *v2 = new QTableWidgetItem(QString::number(M.num_values_2[i]));
+        QTableWidgetItem *v2_2 = new QTableWidgetItem(QString::number(M.d_num_values_2[i]));
+        QTableWidgetItem *diff2 = new QTableWidgetItem(QString::number(M.num_values_2[i] - M.d_num_values_2[i]));
+        double olp1 = (M.d_num_values_1[i] - M.num_values_1[i]) / 15 * 16;
+        double olp2 = (M.d_num_values_2[i] - M.num_values_2[i]) / 15 * 16;
+        QTableWidgetItem *OLP = new QTableWidgetItem(QString::number(std::max(olp1, olp2)));
+        QTableWidgetItem *h = new QTableWidgetItem(QString::number(M.grid_step[i]));
+        QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(M.div2[i]));
+        QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(M.mult2[i]));
+        ui->tableWidgetMain2->insertRow(i);
+        ui->tableWidgetMain2->setItem(i, 0, x);
+        ui->tableWidgetMain2->setItem(i, 1, v1);
+        ui->tableWidgetMain2->setItem(i, 2, v1_2);
+        ui->tableWidgetMain2->setItem(i, 3, diff1);
+        ui->tableWidgetMain2->setItem(i, 4, v2);
+        ui->tableWidgetMain2->setItem(i, 5, v2_2);
+        ui->tableWidgetMain2->setItem(i, 6, diff2);
+        ui->tableWidgetMain2->setItem(i, 7, OLP);
+        ui->tableWidgetMain2->setItem(i, 8, h);
+        ui->tableWidgetMain2->setItem(i, 9, c1);
+        ui->tableWidgetMain2->setItem(i, 10, c2);
     }
 
 }
