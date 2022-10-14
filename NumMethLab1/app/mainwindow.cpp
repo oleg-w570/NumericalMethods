@@ -15,6 +15,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->tableWidgetMain2->setHorizontalHeaderLabels(QStringList() << "Xi" << "V1i" << "V1_2i" << "V1i - V1_2i" << "V2i" << "V2_2i" << "V2i - V2_2i" << "ОЛП" << "Hi" << "C1" << "C2");
     ui->tableWidgetMain2->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+    ui->graphMain2Faz->xAxis->setLabel("u1");
+    ui->graphMain2Faz->yAxis->setLabel("u2");
+    ui->graphMain2U1->xAxis->setLabel("x");
+    ui->graphMain2U1->yAxis->setLabel("u1");
+    ui->graphMain2U2->xAxis->setLabel("x");
+    ui->graphMain2U2->yAxis->setLabel("u2");
+    ui->graphMain1->xAxis->setLabel("x");
+    ui->graphMain1->yAxis->setLabel("u");
+    ui->graphTestTrue->xAxis->setLabel("Истинная траектория");
+    ui->graphTestNum->xAxis->setLabel("Численная траектория");
 }
 
 MainWindow::~MainWindow()
@@ -52,7 +63,8 @@ void MainWindow::on_pushButtonTestRun_clicked()
     ui->graphTestTrue->yAxis->setRange(*min_y_true, *max_y_true);
     ui->graphTestTrue->replot();
 
-
+    T.grid_step.pop_back();
+    T.grid_step.insert(T.grid_step.begin(), h0);
     ui->tableWidgetTest->clearContents();
     ui->tableWidgetTest->setRowCount(0);
 
@@ -62,7 +74,7 @@ void MainWindow::on_pushButtonTestRun_clicked()
         QTableWidgetItem *v = new QTableWidgetItem(QString::number(T.num_values[i]));
         QTableWidgetItem *v2 = new QTableWidgetItem(QString::number(T.d_num_values[i]));
         QTableWidgetItem *diff = new QTableWidgetItem(QString::number(T.num_values[i] - T.d_num_values[i]));
-        QTableWidgetItem *OLP = new QTableWidgetItem(QString::number((T.d_num_values[i] - T.num_values[i]) / 15 * 16));
+        QTableWidgetItem *OLP = new QTableWidgetItem(QString::number(std::abs(T.d_num_values[i] - T.num_values[i]) / 15 * 16));
         QTableWidgetItem *h = new QTableWidgetItem(QString::number(T.grid_step[i]));
         QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(T.div2[i]));
         QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(T.mult2[i]));
@@ -104,7 +116,8 @@ void MainWindow::on_pushButtonMain1Run_clicked()
     ui->graphMain1->yAxis->setRange(*y_min, *y_max);
     ui->graphMain1->replot();
 
-
+    M.grid_step.pop_back();
+    M.grid_step.insert(M.grid_step.begin(), h0);
     ui->tableWidgetMain1->clearContents();
     ui->tableWidgetMain1->setRowCount(0);
 
@@ -114,7 +127,7 @@ void MainWindow::on_pushButtonMain1Run_clicked()
         QTableWidgetItem *v = new QTableWidgetItem(QString::number(M.num_values[i]));
         QTableWidgetItem *v2 = new QTableWidgetItem(QString::number(M.d_num_values[i]));
         QTableWidgetItem *diff = new QTableWidgetItem(QString::number(M.num_values[i] - M.d_num_values[i]));
-        QTableWidgetItem *OLP = new QTableWidgetItem(QString::number((M.d_num_values[i] - M.num_values[i]) / 15 * 16));
+        QTableWidgetItem *OLP = new QTableWidgetItem(QString::number(std::abs(M.d_num_values[i] - M.num_values[i]) / 15 * 16));
         QTableWidgetItem *h = new QTableWidgetItem(QString::number(M.grid_step[i]));
         QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(M.div2[i]));
         QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(M.mult2[i]));
@@ -170,6 +183,8 @@ void MainWindow::on_pushButtonMain2Run_clicked()
     ui->graphMain2U2->yAxis->setRange(*y2_min, *y2_max);
     ui->graphMain2U2->replot();
 
+    M.grid_step.pop_back();
+    M.grid_step.insert(M.grid_step.begin(), h0);
 
     ui->tableWidgetMain2->clearContents();
     ui->tableWidgetMain2->setRowCount(0);
@@ -183,8 +198,8 @@ void MainWindow::on_pushButtonMain2Run_clicked()
         QTableWidgetItem *v2 = new QTableWidgetItem(QString::number(M.num_values_2[i]));
         QTableWidgetItem *v2_2 = new QTableWidgetItem(QString::number(M.d_num_values_2[i]));
         QTableWidgetItem *diff2 = new QTableWidgetItem(QString::number(M.num_values_2[i] - M.d_num_values_2[i]));
-        double olp1 = (M.d_num_values_1[i] - M.num_values_1[i]) / 15 * 16;
-        double olp2 = (M.d_num_values_2[i] - M.num_values_2[i]) / 15 * 16;
+        double olp1 = std::abs(M.d_num_values_1[i] - M.num_values_1[i]) / 15 * 16;
+        double olp2 = std::abs(M.d_num_values_2[i] - M.num_values_2[i]) / 15 * 16;
         QTableWidgetItem *OLP = new QTableWidgetItem(QString::number(std::max(olp1, olp2)));
         QTableWidgetItem *h = new QTableWidgetItem(QString::number(M.grid_step[i]));
         QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(M.div2[i]));

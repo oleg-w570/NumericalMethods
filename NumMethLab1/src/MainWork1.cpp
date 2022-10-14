@@ -19,31 +19,31 @@ MainWork1::MainWork1(double right_border, double initial_value, double initial_s
 
 double MainWork1::Func(double x, double u)
 {
-	return (1/(pow((1+pow(x,2)),(1/3))))*pow(u,2)+u-pow(u,3)*sin(10*x);
+    return (1/(pow((1+pow(x,2)),(1/3))))*pow(u,2)+u-pow(u,3)*sin(10*x);
 }
 
 
 double MainWork1::NumFunc(double x, double v, double h)
 {
-	const double k1 = Func(x,v);
-	const double k2 = Func(x + h / 2,v + h / 2 * k1);
-	const double k3 = Func(x + h / 2,v + h / 2 * k2);
-	const double k4 = Func(x + h, v + h * k3);
-
+    const double k1 = Func(x, v);
+    const double k2 = Func(x + h / 2, v + h / 2 * k1);
+    const double k3 = Func(x + h / 2, v + h / 2 * k2);
+    const double k4 = Func(x + h, v + h * k3);
+    std::cout << "k1=" << k1 << "\tk2=" << k2 << "\tk3=" << k3 << "\tk4=" << k4 << std::endl;
 	return (v + h / 6 * (k1 + 2 * k2 + 2 * k3 + k4));
 }
 
-double MainWork1::DNumFunc(double x,double v, double h)
+double MainWork1::DNumFunc(double x, double v, double h)
 {
 	const double v_tmp = NumFunc(x, v, h / 2);
-	return NumFunc(x, v_tmp, h / 2);
+    return NumFunc(x + h/2, v_tmp, h / 2);
 }
 
 void MainWork1::MethodStep()
 {
 	double h = grid_step.back();
-	const double v = NumFunc(grid.back(),final_num_values.back(), h);
-	const double v2 = DNumFunc(grid.back(),final_num_values.back(), h);
+    const double v = NumFunc(grid.back(), final_num_values.back(), h);
+    const double v2 = DNumFunc(grid.back(), final_num_values.back(), h);
 	const double s = abs(v2 - v) / 15;
 
 	if (s > eps && ctrl_local_err)
@@ -66,7 +66,7 @@ void MainWork1::MethodStep()
 		grid.push_back(x);
 		num_values.push_back(v);
 		d_num_values.push_back(v2);
-		final_num_values.push_back(v + 16 * s);
+        final_num_values.push_back(v + 16 * s);
 	}
 }
 

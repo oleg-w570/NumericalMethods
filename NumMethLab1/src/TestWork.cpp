@@ -73,7 +73,7 @@ void TestWork::MethodStep()
 		true_values.push_back(u);
 		num_values.push_back(v);
 		d_num_values.push_back(v2);
-		final_num_values.push_back(v + 16 * s);
+        final_num_values.push_back(v + 16 * s);
 	}
 }
 
