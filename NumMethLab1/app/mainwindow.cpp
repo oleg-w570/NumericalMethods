@@ -68,18 +68,34 @@ void MainWindow::on_pushButtonTestRun_clicked()
     ui->tableWidgetTest->clearContents();
     ui->tableWidgetTest->setRowCount(0);
 
+    double maxOLP = 0, maxTrueDiff = 0;
+    int indMaxStep = 0, indMinStep = 0, indMaxTrueDiff = 0;
     for (int i = 0; i < T.grid.size(); i++)
     {
         QTableWidgetItem *x = new QTableWidgetItem(QString::number(T.grid[i]));
         QTableWidgetItem *v = new QTableWidgetItem(QString::number(T.num_values[i]));
         QTableWidgetItem *v2 = new QTableWidgetItem(QString::number(T.d_num_values[i]));
         QTableWidgetItem *diff = new QTableWidgetItem(QString::number(T.num_values[i] - T.d_num_values[i]));
-        QTableWidgetItem *OLP = new QTableWidgetItem(QString::number(std::abs(T.d_num_values[i] - T.num_values[i]) / 15 * 16));
-        QTableWidgetItem *h = new QTableWidgetItem(QString::number(T.grid_step[i]));
+        double tmp1 = std::abs(T.d_num_values[i] - T.num_values[i]) / 15 * 16;
+        if (tmp1 > maxOLP)
+            maxOLP = tmp1;
+        QTableWidgetItem *OLP = new QTableWidgetItem(QString::number(tmp1));
+        double tmp2 = T.grid_step[i];
+        if (T.grid_step[indMaxStep] < tmp2)
+            indMaxStep = i;
+        if (T.grid_step[indMinStep] > tmp2)
+            indMinStep = i;
+        QTableWidgetItem *h = new QTableWidgetItem(QString::number(tmp2));
         QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(T.div2[i]));
         QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(T.mult2[i]));
         QTableWidgetItem *u = new QTableWidgetItem(QString::number(T.true_values[i]));
-        QTableWidgetItem *true_diff = new QTableWidgetItem(QString::number(std::abs(T.true_values[i] - T.final_num_values[i])));
+        double tmp3 = std::abs(T.true_values[i] - T.final_num_values[i]);
+        if (tmp3 > maxTrueDiff)
+        {
+            maxTrueDiff = tmp3;
+            indMaxTrueDiff = i;
+        }
+        QTableWidgetItem *true_diff = new QTableWidgetItem(QString::number(tmp3));
         ui->tableWidgetTest->insertRow(i);
         ui->tableWidgetTest->setItem(i, 0, x);
         ui->tableWidgetTest->setItem(i, 1, v);
@@ -92,6 +108,13 @@ void MainWindow::on_pushButtonTestRun_clicked()
         ui->tableWidgetTest->setItem(i, 8, u);
         ui->tableWidgetTest->setItem(i, 9, true_diff);
     }
+
+    QString ref = "Число шагов метода: "  + QString::number(T.grid.size()) + "\nb - xN = " +  QString::number(T.right_border - T.grid.back())
+            + "\nmax|ОЛП| = " + QString::number(maxOLP) + "\nОбщее число удвоений шага: " + QString::number(T.mult) + "\nОбщее число делений шага: "
+            + QString::number(T.div) + "\nmax{Hi} = " + QString::number(T.grid_step[indMaxStep]) + " при x = " + QString::number(T.grid[indMaxStep])
+            + "\nmin{Hi} = " + QString::number(T.grid_step[indMinStep]) + " при x = " + QString::number(T.grid[indMinStep])
+            + "\nmax|Ui - Vi| = " + QString::number(maxTrueDiff) + " при x = " + QString::number(T.grid[indMaxTrueDiff]);
+    ui->textBrowserTest->setText(ref);
 }
 
 
@@ -121,13 +144,23 @@ void MainWindow::on_pushButtonMain1Run_clicked()
     ui->tableWidgetMain1->clearContents();
     ui->tableWidgetMain1->setRowCount(0);
 
+    double maxOLP = 0;
+    int indMaxStep = 0, indMinStep = 0;
     for (int i = 0; i < M.grid.size(); i++)
     {
         QTableWidgetItem *x = new QTableWidgetItem(QString::number(M.grid[i]));
         QTableWidgetItem *v = new QTableWidgetItem(QString::number(M.num_values[i]));
         QTableWidgetItem *v2 = new QTableWidgetItem(QString::number(M.d_num_values[i]));
         QTableWidgetItem *diff = new QTableWidgetItem(QString::number(M.num_values[i] - M.d_num_values[i]));
-        QTableWidgetItem *OLP = new QTableWidgetItem(QString::number(std::abs(M.d_num_values[i] - M.num_values[i]) / 15 * 16));
+        double tmp1 = std::abs(M.d_num_values[i] - M.num_values[i]) / 15 * 16;
+        if (tmp1 > maxOLP)
+            maxOLP = tmp1;
+        QTableWidgetItem *OLP = new QTableWidgetItem(QString::number(tmp1));
+        double tmp2 = M.grid_step[i];
+        if (M.grid_step[indMaxStep] < tmp2)
+            indMaxStep = i;
+        if (M.grid_step[indMinStep] > tmp2)
+            indMinStep = i;
         QTableWidgetItem *h = new QTableWidgetItem(QString::number(M.grid_step[i]));
         QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(M.div2[i]));
         QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(M.mult2[i]));
@@ -141,6 +174,12 @@ void MainWindow::on_pushButtonMain1Run_clicked()
         ui->tableWidgetMain1->setItem(i, 6, c1);
         ui->tableWidgetMain1->setItem(i, 7, c2);
     }
+
+    QString ref = "Число шагов метода: "  + QString::number(M.grid.size()) + "\nb - xN = " +  QString::number(M.right_border - M.grid.back())
+            + "\nmax|ОЛП| = " + QString::number(maxOLP) + "\nОбщее число удвоений шага: " + QString::number(M.mult) + "\nОбщее число делений шага: "
+            + QString::number(M.div) + "\nmax{Hi} = " + QString::number(M.grid_step[indMaxStep]) + " при x = " + QString::number(M.grid[indMaxStep])
+            + "\nmin{Hi} = " + QString::number(M.grid_step[indMinStep]) + " при x = " + QString::number(M.grid[indMinStep]);
+    ui->textBrowserMain1->setText(ref);
 
 }
 
@@ -189,6 +228,8 @@ void MainWindow::on_pushButtonMain2Run_clicked()
     ui->tableWidgetMain2->clearContents();
     ui->tableWidgetMain2->setRowCount(0);
 
+    double maxOLP = 0;
+    int indMaxStep = 0, indMinStep = 0;
     for (int i = 0; i < M.grid.size(); i++)
     {
         QTableWidgetItem *x = new QTableWidgetItem(QString::number(M.grid[i]));
@@ -200,7 +241,15 @@ void MainWindow::on_pushButtonMain2Run_clicked()
         QTableWidgetItem *diff2 = new QTableWidgetItem(QString::number(M.num_values_2[i] - M.d_num_values_2[i]));
         double olp1 = std::abs(M.d_num_values_1[i] - M.num_values_1[i]) / 15 * 16;
         double olp2 = std::abs(M.d_num_values_2[i] - M.num_values_2[i]) / 15 * 16;
-        QTableWidgetItem *OLP = new QTableWidgetItem(QString::number(std::max(olp1, olp2)));
+        double tmp1 = std::max(olp1, olp2);
+        if (tmp1 > maxOLP)
+            maxOLP = tmp1;
+        QTableWidgetItem *OLP = new QTableWidgetItem(QString::number(tmp1));
+        double tmp2 = M.grid_step[i];
+        if (M.grid_step[indMaxStep] < tmp2)
+            indMaxStep = i;
+        if (M.grid_step[indMinStep] > tmp2)
+            indMinStep = i;
         QTableWidgetItem *h = new QTableWidgetItem(QString::number(M.grid_step[i]));
         QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(M.div2[i]));
         QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(M.mult2[i]));
@@ -218,5 +267,10 @@ void MainWindow::on_pushButtonMain2Run_clicked()
         ui->tableWidgetMain2->setItem(i, 10, c2);
     }
 
+    QString ref = "Число шагов метода: "  + QString::number(M.grid.size()) + "\nb - xN = " +  QString::number(M.right_border - M.grid.back())
+            + "\nmax|ОЛП| = " + QString::number(maxOLP) + "\nОбщее число удвоений шага: " + QString::number(M.mult) + "\nОбщее число делений шага: "
+            + QString::number(M.div) + "\nmax{Hi} = " + QString::number(M.grid_step[indMaxStep]) + " при x = " + QString::number(M.grid[indMaxStep])
+            + "\nmin{Hi} = " + QString::number(M.grid_step[indMinStep]) + " при x = " + QString::number(M.grid[indMinStep]);
+    ui->textBrowserMain2->setText(ref);
 }
 
