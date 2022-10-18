@@ -29,7 +29,6 @@ double MainWork1::NumFunc(double x, double v, double h)
     const double k2 = Func(x + h / 2, v + h / 2 * k1);
     const double k3 = Func(x + h / 2, v + h / 2 * k2);
     const double k4 = Func(x + h, v + h * k3);
-    std::cout << "k1=" << k1 << "\tk2=" << k2 << "\tk3=" << k3 << "\tk4=" << k4 << std::endl;
 	return (v + h / 6 * (k1 + 2 * k2 + 2 * k3 + k4));
 }
 
@@ -54,7 +53,7 @@ void MainWork1::MethodStep()
 	else
 	{
 		const double x = grid.back() + h;
-		if (s < eps / 32 && ctrl_local_err)
+        if (s < eps / 32 && ctrl_local_err)
 		{
 			h *= 2;
 			mult++;
@@ -67,6 +66,7 @@ void MainWork1::MethodStep()
 		num_values.push_back(v);
 		d_num_values.push_back(v2);
         final_num_values.push_back(v + 16 * s);
+
 	}
 }
 
@@ -78,6 +78,12 @@ void MainWork1::Run()
 		MethodStep();
 		n++;
 	}
+
+    if (grid.back() < right_border && grid.back() + grid_step.back() > right_border )
+    {
+        grid_step.back() = right_border - grid.back();
+        MethodStep();
+    }
 }
 
 void MainWork1::Print()

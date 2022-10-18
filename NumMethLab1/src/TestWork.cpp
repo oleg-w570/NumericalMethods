@@ -85,6 +85,12 @@ void TestWork::Run()
 		MethodStep();
 		n++;
 	}
+
+    if (grid.back() < right_border && grid.back() + grid_step.back() > right_border )
+    {
+        grid_step.back() = right_border - grid.back();
+        MethodStep();
+    }
 }
 
 void TestWork::Print()

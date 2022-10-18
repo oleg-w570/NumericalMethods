@@ -116,6 +116,12 @@ void MainWork2::Run()
 		MethodStep();
 		n++;
 	}
+
+    if (grid.back() < right_border && grid.back() + grid_step.back() > right_border )
+    {
+        grid_step.back() = right_border - grid.back();
+        MethodStep();
+    }
 }
 
 void MainWork2::Print()

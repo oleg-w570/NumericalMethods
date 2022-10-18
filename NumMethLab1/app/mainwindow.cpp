@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->graphMain1->yAxis->setLabel("u");
     ui->graphTestTrue->xAxis->setLabel("Истинная траектория");
     ui->graphTestNum->xAxis->setLabel("Численная траектория");
+
+
 }
 
 MainWindow::~MainWindow()
@@ -48,19 +50,15 @@ void MainWindow::on_pushButtonTestRun_clicked()
     QVector<double> x = QVector<double>(T.grid.begin(), T.grid.end());
     QVector<double> y_num = QVector<double>(T.final_num_values.begin(), T.final_num_values.end());
     QVector<double> y_true = QVector<double>(T.true_values.begin(), T.true_values.end());
-    const auto [min_y_num, max_y_num] = std::minmax_element(T.final_num_values.begin(), T.final_num_values.end());
-    const auto [min_y_true, max_y_true] = std::minmax_element(T.true_values.begin(), T.true_values.end());
 
     ui->graphTestNum->addGraph();
     ui->graphTestNum->graph(0)->setData(x, y_num);
-    ui->graphTestNum->xAxis->setRange(0, T.right_border);
-    ui->graphTestNum->yAxis->setRange(*min_y_num, *max_y_num);
+    ui->graphTestNum->graph(0)->rescaleAxes();
     ui->graphTestNum->replot();
 
     ui->graphTestTrue->addGraph();
     ui->graphTestTrue->graph(0)->setData(x, y_true);
-    ui->graphTestTrue->xAxis->setRange(0, T.right_border);
-    ui->graphTestTrue->yAxis->setRange(*min_y_true, *max_y_true);
+    ui->graphTestTrue->rescaleAxes();
     ui->graphTestTrue->replot();
 
     T.grid_step.pop_back();
@@ -86,8 +84,10 @@ void MainWindow::on_pushButtonTestRun_clicked()
         if (T.grid_step[indMinStep] > tmp2)
             indMinStep = i;
         QTableWidgetItem *h = new QTableWidgetItem(QString::number(tmp2));
-        QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(T.div2[i]));
-        QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(T.mult2[i]));
+        int tmp4 = i > 0 ? T.div2[i] - T.div2[i-1] : 0;
+        int tmp5 = i > 0 ? T.mult2[i] - T.mult2[i-1] : 0;
+        QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(tmp4));
+        QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(tmp5));
         QTableWidgetItem *u = new QTableWidgetItem(QString::number(T.true_values[i]));
         double tmp3 = std::abs(T.true_values[i] - T.final_num_values[i]);
         if (tmp3 > maxTrueDiff)
@@ -131,12 +131,10 @@ void MainWindow::on_pushButtonMain1Run_clicked()
     M.Run();
     QVector<double> x(M.grid.begin(), M.grid.end());
     QVector<double> y(M.final_num_values.begin(), M.final_num_values.end());
-    const auto [y_min, y_max] = std::minmax_element(M.final_num_values.begin(), M.final_num_values.end());
 
     ui->graphMain1->addGraph();
     ui->graphMain1->graph(0)->setData(x, y);
-    ui->graphMain1->xAxis->setRange(0, M.grid.back());
-    ui->graphMain1->yAxis->setRange(*y_min, *y_max);
+    ui->graphMain1->graph(0)->rescaleAxes();
     ui->graphMain1->replot();
 
     M.grid_step.pop_back();
@@ -162,8 +160,10 @@ void MainWindow::on_pushButtonMain1Run_clicked()
         if (M.grid_step[indMinStep] > tmp2)
             indMinStep = i;
         QTableWidgetItem *h = new QTableWidgetItem(QString::number(M.grid_step[i]));
-        QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(M.div2[i]));
-        QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(M.mult2[i]));
+        int tmp4 = i > 0 ? M.div2[i] - M.div2[i-1] : 0;
+        int tmp5 = i > 1 ? M.mult2[i-1] - M.mult2[i-2] : 0;
+        QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(tmp4));
+        QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(tmp5));
         ui->tableWidgetMain1->insertRow(i);
         ui->tableWidgetMain1->setItem(i, 0, x);
         ui->tableWidgetMain1->setItem(i, 1, v);
@@ -201,25 +201,32 @@ void MainWindow::on_pushButtonMain2Run_clicked()
     QVector<double> x(M.grid.begin(), M.grid.end());
     QVector<double> y1(M.final_num_values_1.begin(), M.final_num_values_1.end());
     QVector<double> y2(M.final_num_values_2.begin(), M.final_num_values_2.end());
-    const auto [y1_min, y1_max] = std::minmax_element(M.final_num_values_1.begin(), M.final_num_values_1.end());
-    const auto [y2_min, y2_max] = std::minmax_element(M.final_num_values_2.begin(), M.final_num_values_2.end());
+    int j = 0;
+    while(j < y1.size()-1 && y1[j] < y1[j+1])
+    {
+        j++;
+    }
+    QVector<double> y11(y1.begin(), y1.begin()+j+1);
+    QVector<double> y12(y1.begin()+j, y1.end());
+    QVector<double> y21(y2.begin(), y2.begin()+j+1);
+    QVector<double> y22(y2.begin()+j, y2.end());
 
     ui->graphMain2Faz->addGraph();
-    ui->graphMain2Faz->graph(0)->setData(y1, y2);
-    ui->graphMain2Faz->xAxis->setRange(*y1_min, *y1_max);
-    ui->graphMain2Faz->yAxis->setRange(*y2_min, *y2_max);
+    ui->graphMain2Faz->graph(0)->setData(y11, y21);
+    ui->graphMain2Faz->addGraph();
+    ui->graphMain2Faz->graph(1)->setData(y12, y22);
+    ui->graphMain2Faz->graph(0)->rescaleAxes();
+    ui->graphMain2Faz->graph(1)->rescaleAxes(true);
     ui->graphMain2Faz->replot();
 
     ui->graphMain2U1->addGraph();
-    ui->graphMain2U1->graph(0)->setData(x, y1);
-    ui->graphMain2U1->xAxis->setRange(0, M.grid.back());
-    ui->graphMain2U1->yAxis->setRange(*y1_min, *y1_max);
+    ui->graphMain2U1->graph(0)->setData(x, y1, true);
+    ui->graphMain2U1->graph(0)->rescaleAxes();
     ui->graphMain2U1->replot();
 
     ui->graphMain2U2->addGraph();
-    ui->graphMain2U2->graph(0)->setData(x, y2);
-    ui->graphMain2U2->xAxis->setRange(0, M.grid.back());
-    ui->graphMain2U2->yAxis->setRange(*y2_min, *y2_max);
+    ui->graphMain2U2->graph(0)->setData(x, y2, true);
+    ui->graphMain2U2->graph(0)->rescaleAxes();
     ui->graphMain2U2->replot();
 
     M.grid_step.pop_back();
@@ -251,8 +258,10 @@ void MainWindow::on_pushButtonMain2Run_clicked()
         if (M.grid_step[indMinStep] > tmp2)
             indMinStep = i;
         QTableWidgetItem *h = new QTableWidgetItem(QString::number(M.grid_step[i]));
-        QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(M.div2[i]));
-        QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(M.mult2[i]));
+        int tmp4 = i > 0 ? M.div2[i] - M.div2[i-1] : 0;
+        int tmp5 = i > 1 ? M.mult2[i-1] - M.mult2[i-2] : 0;
+        QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(tmp4));
+        QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(tmp5));
         ui->tableWidgetMain2->insertRow(i);
         ui->tableWidgetMain2->setItem(i, 0, x);
         ui->tableWidgetMain2->setItem(i, 1, v1);
