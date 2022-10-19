@@ -97,6 +97,7 @@ void MainWindow::on_pushButtonTestRun_clicked()
         }
         QTableWidgetItem *true_diff = new QTableWidgetItem(QString::number(tmp3));
         ui->tableWidgetTest->insertRow(i);
+        ui->tableWidgetTest->setVerticalHeaderItem(i, new QTableWidgetItem(QString::number(i)));
         ui->tableWidgetTest->setItem(i, 0, x);
         ui->tableWidgetTest->setItem(i, 1, v);
         ui->tableWidgetTest->setItem(i, 2, v2);
@@ -109,7 +110,7 @@ void MainWindow::on_pushButtonTestRun_clicked()
         ui->tableWidgetTest->setItem(i, 9, true_diff);
     }
 
-    QString ref = "Число шагов метода: "  + QString::number(T.grid.size()) + "\nb - xN = " +  QString::number(T.right_border - T.grid.back())
+    QString ref = "Число шагов метода: "  + QString::number(T.grid.size()-1) + "\nb - xN = " +  QString::number(T.right_border - T.grid.back())
             + "\nmax|ОЛП| = " + QString::number(maxOLP) + "\nОбщее число удвоений шага: " + QString::number(T.mult) + "\nОбщее число делений шага: "
             + QString::number(T.div) + "\nmax{Hi} = " + QString::number(T.grid_step[indMaxStep]) + " при x = " + QString::number(T.grid[indMaxStep])
             + "\nmin{Hi} = " + QString::number(T.grid_step[indMinStep]) + " при x = " + QString::number(T.grid[indMinStep])
@@ -165,6 +166,7 @@ void MainWindow::on_pushButtonMain1Run_clicked()
         QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(tmp4));
         QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(tmp5));
         ui->tableWidgetMain1->insertRow(i);
+        ui->tableWidgetMain1->setVerticalHeaderItem(i, new QTableWidgetItem(QString::number(i)));
         ui->tableWidgetMain1->setItem(i, 0, x);
         ui->tableWidgetMain1->setItem(i, 1, v);
         ui->tableWidgetMain1->setItem(i, 2, v2);
@@ -175,7 +177,7 @@ void MainWindow::on_pushButtonMain1Run_clicked()
         ui->tableWidgetMain1->setItem(i, 7, c2);
     }
 
-    QString ref = "Число шагов метода: "  + QString::number(M.grid.size()) + "\nb - xN = " +  QString::number(M.right_border - M.grid.back())
+    QString ref = "Число шагов метода: "  + QString::number(M.grid.size()-1) + "\nb - xN = " +  QString::number(M.right_border - M.grid.back())
             + "\nmax|ОЛП| = " + QString::number(maxOLP) + "\nОбщее число удвоений шага: " + QString::number(M.mult) + "\nОбщее число делений шага: "
             + QString::number(M.div) + "\nmax{Hi} = " + QString::number(M.grid_step[indMaxStep]) + " при x = " + QString::number(M.grid[indMaxStep])
             + "\nmin{Hi} = " + QString::number(M.grid_step[indMinStep]) + " при x = " + QString::number(M.grid[indMinStep]);
@@ -201,22 +203,39 @@ void MainWindow::on_pushButtonMain2Run_clicked()
     QVector<double> x(M.grid.begin(), M.grid.end());
     QVector<double> y1(M.final_num_values_1.begin(), M.final_num_values_1.end());
     QVector<double> y2(M.final_num_values_2.begin(), M.final_num_values_2.end());
+    //qDebug() << "u1:\n" << y1 << "\nu2:\n" << y2;
     int j = 0;
-    while(j < y1.size()-1 && y1[j] < y1[j+1])
+    QVector<int> delim;
+    delim.push_back(1);
+    bool up = std::abs(y1[0]) < std::abs(y1[1]);
+    while(j < y1.size()-1)
     {
+        if ((y1[j] < y1[j+1] && !up)||(y1[j] > y1[j+1] && up))
+        {
+            delim.push_back(j+1);
+            up = !up;
+        }
         j++;
     }
-    QVector<double> y11(y1.begin(), y1.begin()+j+1);
-    QVector<double> y12(y1.begin()+j, y1.end());
-    QVector<double> y21(y2.begin(), y2.begin()+j+1);
-    QVector<double> y22(y2.begin()+j, y2.end());
-
-    ui->graphMain2Faz->addGraph();
-    ui->graphMain2Faz->graph(0)->setData(y11, y21);
-    ui->graphMain2Faz->addGraph();
-    ui->graphMain2Faz->graph(1)->setData(y12, y22);
-    ui->graphMain2Faz->graph(0)->rescaleAxes();
-    ui->graphMain2Faz->graph(1)->rescaleAxes(true);
+    delim.push_back(j+1);
+    //qDebug() << "\nDelim: " << delim << "\n";
+    QVector<QVector<double>> y1_parts(delim.size()-1);
+    QVector<QVector<double>> y2_parts(delim.size()-1);
+    for (int i = 0; i < y1_parts.size(); i++)
+    {
+        y1_parts[i] = QVector<double>(y1.begin()+delim[i]-1, y1.begin()+delim[i+1]);
+        y2_parts[i] = QVector<double>(y2.begin()+delim[i]-1, y2.begin()+delim[i+1]);
+        //qDebug() << "\nparts " << i << ":\n" << y1_parts[i];
+    }
+    for (int i = 0; i < y1_parts.size(); i++)
+    {
+        ui->graphMain2Faz->addGraph();
+        ui->graphMain2Faz->graph(i)->setData(y1_parts[i], y2_parts[i]);
+        if (i > 0)
+            ui->graphMain2Faz->graph(i)->rescaleAxes(true);
+        else
+            ui->graphMain2Faz->graph(i)->rescaleAxes();
+    }
     ui->graphMain2Faz->replot();
 
     ui->graphMain2U1->addGraph();
@@ -263,6 +282,7 @@ void MainWindow::on_pushButtonMain2Run_clicked()
         QTableWidgetItem *c1 = new QTableWidgetItem(QString::number(tmp4));
         QTableWidgetItem *c2 = new QTableWidgetItem(QString::number(tmp5));
         ui->tableWidgetMain2->insertRow(i);
+        ui->tableWidgetMain2->setVerticalHeaderItem(i, new QTableWidgetItem(QString::number(i)));
         ui->tableWidgetMain2->setItem(i, 0, x);
         ui->tableWidgetMain2->setItem(i, 1, v1);
         ui->tableWidgetMain2->setItem(i, 2, v1_2);
@@ -276,7 +296,7 @@ void MainWindow::on_pushButtonMain2Run_clicked()
         ui->tableWidgetMain2->setItem(i, 10, c2);
     }
 
-    QString ref = "Число шагов метода: "  + QString::number(M.grid.size()) + "\nb - xN = " +  QString::number(M.right_border - M.grid.back())
+    QString ref = "Число шагов метода: "  + QString::number(M.grid.size()-1) + "\nb - xN = " +  QString::number(M.right_border - M.grid.back())
             + "\nmax|ОЛП| = " + QString::number(maxOLP) + "\nОбщее число удвоений шага: " + QString::number(M.mult) + "\nОбщее число делений шага: "
             + QString::number(M.div) + "\nmax{Hi} = " + QString::number(M.grid_step[indMaxStep]) + " при x = " + QString::number(M.grid[indMaxStep])
             + "\nmin{Hi} = " + QString::number(M.grid_step[indMinStep]) + " при x = " + QString::number(M.grid[indMinStep]);

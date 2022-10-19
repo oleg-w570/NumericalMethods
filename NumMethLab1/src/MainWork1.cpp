@@ -79,7 +79,7 @@ void MainWork1::Run()
 		n++;
 	}
 
-    if (grid.back() < right_border && grid.back() + grid_step.back() > right_border )
+    if (right_border - grid.back() > 1e-8 && grid.back() + grid_step.back() > right_border )
     {
         grid_step.back() = right_border - grid.back();
         MethodStep();
