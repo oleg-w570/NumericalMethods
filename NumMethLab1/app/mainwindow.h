@@ -4,6 +4,9 @@
 #include "MainWork1.h"
 #include "MainWork2.h"
 #include <QMainWindow>
+#include <QChart>
+#include <QChartView>
+#include <QLineSeries>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

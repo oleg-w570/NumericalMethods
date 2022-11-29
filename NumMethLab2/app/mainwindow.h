@@ -2,10 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QVector>
-#include "../TestWork/TestWork/TestWork.h"
-#include "../TestWork/TestWork/MainWork1.h"
-#include "../TestWork/TestWork/MainWork2.h"
+#include <QChart>
+#include <QChartView>
+#include <QLineSeries>
+#include <QValueAxis>
+#include "solver.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,17 +21,10 @@ public:
     ~MainWindow();
 
 private slots:
-
     void on_pushButtonRun_clicked();
 
 private:
-    TestWork* T;
-    MainWork1* M1;
-    MainWork2* M2;
     Ui::MainWindow *ui;
-
-    void calcTest();
-    void calcMain1();
-    void calcMain2();
+    Solver S;
 };
 #endif // MAINWINDOW_H

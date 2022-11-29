@@ -1,6 +1,6 @@
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets charts
 
 CONFIG += c++17
 
@@ -8,23 +8,22 @@ CONFIG += c++17
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+INCLUDEPATH += "include"
+INCLUDEPATH += "app"
+
 SOURCES += \
-    ../TestWork/TestWork/MainWork1.cpp \
-    ../TestWork/TestWork/MainWork2.cpp \
-    ../TestWork/TestWork/TestWork.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    qcustomplot.cpp
+    app/main.cpp \
+    app/mainwindow.cpp \
+    src/solver.cpp \
+    src/tridiagonal_matrix_algorithm.cpp \
 
 HEADERS += \
-    ../TestWork/TestWork/MainWork1.h \
-    ../TestWork/TestWork/MainWork2.h \
-    ../TestWork/TestWork/TestWork.h \
-    mainwindow.h \
-    qcustomplot.h
+    app/mainwindow.h \
+    include/solver.h \
+    include/tridiagonal_matrix_algorithm.h
 
 FORMS += \
-    mainwindow.ui
+    app/mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

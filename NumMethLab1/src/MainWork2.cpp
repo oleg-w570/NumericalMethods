@@ -29,7 +29,8 @@ double MainWork2::Func1(double u2)
 
 double MainWork2::Func2(double u1, double u2)
 {
-	return -a * u2 * u2 - b * u1;
+    return -a * u2 * u2 - b * u1;
+    //return -0.15 * u2 - 2 * u1;
 }
 
 

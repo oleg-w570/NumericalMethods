@@ -73,17 +73,18 @@ void MainWork1::MethodStep()
 void MainWork1::Run()
 {
 	int n = 0;
-	while (grid.back() + grid_step.back() < right_border && n < max_steps)
+    while (grid.back() + grid_step.back() < right_border && n < max_steps)
 	{
 		MethodStep();
 		n++;
 	}
 
-    if (right_border - grid.back() > 1e-8 && grid.back() + grid_step.back() > right_border )
+    if (right_border - grid.back() > 1e-8 && grid.back() + grid_step.back() > right_border)
     {
         grid_step.back() = right_border - grid.back();
         MethodStep();
     }
+    std::cout << grid.back() << ", " << grid_step.back() << ", " << right_border << ", " << n << ", " << max_steps << std::endl;
 }
 
 void MainWork1::Print()

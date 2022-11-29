@@ -182,7 +182,7 @@ void MainWindow::on_pushButtonMain1Run_clicked()
             + QString::number(M.div) + "\nmax{Hi} = " + QString::number(M.grid_step[indMaxStep]) + " при x = " + QString::number(M.grid[indMaxStep])
             + "\nmin{Hi} = " + QString::number(M.grid_step[indMinStep]) + " при x = " + QString::number(M.grid[indMinStep]);
     ui->textBrowserMain1->setText(ref);
-
+    qDebug() << M.grid.back() << "   " << M.grid_step.back();
 }
 
 
@@ -301,5 +301,21 @@ void MainWindow::on_pushButtonMain2Run_clicked()
             + QString::number(M.div) + "\nmax{Hi} = " + QString::number(M.grid_step[indMaxStep]) + " при x = " + QString::number(M.grid[indMaxStep])
             + "\nmin{Hi} = " + QString::number(M.grid_step[indMinStep]) + " при x = " + QString::number(M.grid[indMinStep]);
     ui->textBrowserMain2->setText(ref);
+
+
+    QChartView *chartView = new QChartView(this);
+    ui->horizontalLayout_5->addWidget(chartView);
+
+    QLineSeries *series = new QLineSeries();
+    for (int i = 0; i < y1.size(); i++)
+    {
+        *series << QPointF(y2[i], y1[i]);
+    }
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->legend()->hide();
+    chart->setTitle("Graphic");
+
+    chartView->setChart(chart);
 }
 
