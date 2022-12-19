@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>826</width>
-    <height>526</height>
+    <height>447</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Numerical Methods Second Lab</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -81,12 +81,8 @@
               <height>0</height>
              </size>
             </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="pushButtonRun">
             <property name="text">
-             <string>Вычислить</string>
+             <string>1000</string>
             </property>
            </widget>
           </item>
@@ -109,6 +105,13 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QPushButton" name="pushButtonRun">
+            <property name="text">
+             <string>Вычислить</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -117,14 +120,23 @@
          <property name="title">
           <string>Справка</string>
          </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <widget class="QTextBrowser" name="reference">
+           <widget class="QLabel" name="reference">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
             </property>
            </widget>
           </item>
@@ -136,7 +148,7 @@
     </item>
     <item>
      <widget class="QWidget" name="widget_2" native="true">
-      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="25,35,35">
+      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="26,35,35">
        <property name="spacing">
         <number>9</number>
        </property>
@@ -169,10 +181,18 @@
         </widget>
        </item>
        <item>
-        <widget class="QChartView" name="chartview1"/>
+        <widget class="QChartView" name="chartview1">
+         <property name="renderHints">
+          <set>QPainter::Antialiasing|QPainter::TextAntialiasing</set>
+         </property>
+        </widget>
        </item>
        <item>
-        <widget class="QChartView" name="chartview2"/>
+        <widget class="QChartView" name="chartview2">
+         <property name="renderHints">
+          <set>QPainter::Antialiasing|QPainter::TextAntialiasing</set>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -206,7 +226,6 @@
   <tabstop>table</tabstop>
   <tabstop>chartview1</tabstop>
   <tabstop>chartview2</tabstop>
-  <tabstop>reference</tabstop>
  </tabstops>
  <resources/>
  <connections/>
